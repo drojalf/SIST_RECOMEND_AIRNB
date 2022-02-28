@@ -1,20 +1,9 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.cluster import KMeans
-from wordcloud import WordCloud
-import string
-from IPython.display import Image
 from tqdm import tqdm
 import requests
 import json
 from bs4 import BeautifulSoup
 from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
-import numpy as np
-import math as m
-import folium
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv

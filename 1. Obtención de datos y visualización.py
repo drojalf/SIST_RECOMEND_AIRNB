@@ -1,20 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.cluster import KMeans
-from wordcloud import WordCloud
 import string
-from IPython.display import Image
 from tqdm import tqdm
-import requests
-import json
-from bs4 import BeautifulSoup
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
-import numpy as np
-import math as m
-import folium
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -27,12 +15,11 @@ client = MongoClient(
     f"mongodb+srv://admin:{KEY_MONGO}@clusterairbnb.hkqbr.mongodb.net/")
 
 col = client["proyectoairbnb"]["airbnb_listings"]
-dataset = pd.DataFrame(list(col.find()),index=None)
+dataset = pd.DataFrame(list(col.find()), index=None)
 
-# IMPORTAMOS EL DATASET:
+dataset.info()
 
-path = r"C:\Users\Lenovo\Documents\CURSO DATA SCIENCE - NEBULOVA\Archivos\PROYECTO AIRBNB\airbnb-listings.csv"
-dataset = pd.read_csv(path, sep=";")
+dataset.describe()
 
 dataset_new = dataset.loc[:, ["ID",
                               "Name",
@@ -60,11 +47,11 @@ dataset_new = dataset.loc[:, ["ID",
 
 # FILTRAMOS PARA QUEDARNOS SOLO CON ESPAÑA:
 
-dataset_new = dataset_new[dataset_new['Country'] == "Spain"]
+dataset_new = dataset_new[dataset_new['Country'] == "Spain"].copy()
 filtro = ["Madrid", "Barcelona"]
 dataset_new1 = dataset_new[dataset_new.City.isin(filtro)]
 
-dataset = dataset_new1
+dataset = dataset_new1.copy()
 
 dataset.info()
 
@@ -73,12 +60,12 @@ dataset.describe()
 # LIMPIEZA DE VALORES NULOS PARA COLUMNAS OBJECT:
 
 for i in range(dataset.shape[1]):
-    if dataset.iloc[:,i].dtype == 'O':
+    if dataset.iloc[:, i].dtype == 'O':
         dataset.iloc[:, i].fillna("N.A", inplace=True)
 
 # LIMPIEZA DE VALORES NULOS PARA LOS RATINGS    :
 
-dataset.iloc[:, 18].fillna(dataset.iloc[:,18].mean(), inplace=True)
+dataset.iloc[:, 18].fillna(dataset.iloc[:, 18].mean(), inplace=True)
 
 # AL HABER POCOS VALORES NULOS, DESCARTAMOS LAS FILAS QUE TENGAN ALGÚN VALOR NULO:
 dataset.dropna(inplace=True)

@@ -1,9 +1,6 @@
-import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from yellowbrick.cluster import KElbowVisualizer
-from operator import itemgetter
 from sklearn.preprocessing import MinMaxScaler
-import numpy as np
 import pandas as pd
 import pymongo
 from dotenv import load_dotenv

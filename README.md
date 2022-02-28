@@ -7,7 +7,7 @@ En esta primera versión, hemos utilizado solo las ciudades de Madrid y Barcelon
 Para la obtención de los datos hemos utilizado varias fuentes de datos que detallamos a continuación:
 
 1. La primera fuente de información utilizada fue la base de datos de OpenDataSoft: https://public.opendatasoft.com/explore/dataset/airbnb-listings/table/?disjunctive.host_verifications&disjunctive.amenities&disjunctive.features
-de la cual se puede descargar la información de listings AirBNB de numerosos países del mundo. En este caso nos interesaba quedarnos solo con España, y dentro de esta, con las ciudades de Madrid y Barcelona. De las columnas que lleva el dataset, nos hemos quedado con 22 columnas, que son las siguientes:
+de la cual se puede descargar la información de listings AirBNB de numerosos países del mundo. En este caso nos interesaba quedarnos solo con España, y dentro de esta, con las ciudades de Madrid y Barcelona. De las columnas que lleva el dataset, nos hemos quedado con las 22 columnas que hemos considerado más relevantes a la hora de realizar la recomendación. Además de este criterio, algunas otras variables se han descartado por motivos de economización de recursos, pero pueden ser aplicados en versiones posteriores. Finalmente, las variables con las que nos hemos quedaro son las siguientes:
 
         - "ID"
         - "Name"
@@ -34,25 +34,28 @@ de la cual se puede descargar la información de listings AirBNB de numerosos pa
 
 2. La segunda fuente de datos utilizada, ha sido la web de OpenTripMaps. 
 https://opentripmap.io/ Aprovechando la columna "Geolocation" de la información obtenida en OpenDataSoft, hemos analizado la cercanía de cada alojamiento a los diferentes puntos de interes de cada ciudad, catalogando cada uno en función de los POI's cercanos. 
-Para ello, este código hace uso de la API de esta web con el objetivo de hacer una exploración de los diferentes puntos de interes, distinguiéndolos por su diversa tipología (historia, deportes, museos, restaurantes, monumentos...) en un radio de 500 metros a la redonda de cada uno de los alojamientos. 
+Para ello, hacemos uso de la API de esta web con el objetivo de hacer una exploración de los diferentes puntos de interes, distinguiéndolos por su diversa tipología (historia, deportes, museos, restaurantes, monumentos...) en un radio de 500 metros a la redonda de cada uno de los alojamientos. 
 Este radio se ha establecido por cuestión de equilibrio entre funcionalidad y economizar recursos, pero es ampliable.
 
-## Paso 1: Obtención de información y limpieza de datos:
+## Código 1: 
+
+### Obtención de información y limpieza de datos:
 
 Al comienzo del proyecto, se recoge la tabla obtenida directamente desde OpenDataSoft y se extrae la información que necesitamos. Nos quedamos con las ciudades de Madrid y Barcelona, así como también nos quedamos solo con las columnas enumeradas en el punto anterior.
 
-Luego se efectúa una limpieza de los valores nulos para las columnas objeto, así como para la columna de ratings. Una vez hecho, al quedar pocos valores nulos, desecharíamos las filas que tengan algún valor nulo.
+Luego se efectúa una limpieza de los valores nulos, así como para la columna de ratings. Una vez hecho, al quedar pocos valores nulos, desecharíamos las filas que tengan algún valor nulo.
 
 Como resultado de esto, es obtienen 30.425 filas.
 
-## Paso 2: Análisis de la información y visualización:
+### Análisis de la información y visualización:
 En este paso, visualizamos la información a través de distintos gráficos de visualización con las librerías Plotly y Matplotlib:
     - Distribución de puntuaciones: Observamos que las calificaciones predominantes, con diferencia, son aquellas que rondan el 9.
     - La distribución de precios en una muestra de los 1000 primeros: Observamos que la gran mayoría se ubica en menos de 100 Euros la noche, luego hay muchos que superan esta cantidad, y algunos aislados con valores muy altos.
     - Precios en funcion del tipo de propiedad: En este caso, observamos que aquellas propiedades "no usuales" son las más caras, como las villas, los barcos, o las cuevas.
     - Mapa de calor: Observamos mucha correlación entre las columnas de Accommodates, Bedrooms, Bathrooms...
+Se incluyen diversas visualizaciones en el PDF anexo.
 
-## Paso 3: Obtención de los puntos de interés:
+## Código 2: Obtención de los puntos de interés:
 A través de la API de Opentripmaps, y valiéndonos de la columna Geolocation, hacemos una iteración de todos los alojamientos para que nos informe de aquellos POI's existentes a su alrededor. Estos pois quedan almacenados en un .json de cada listing, recogiendo su ID, tipo, nombre...
 
 Posteriormente se scrapean las distintas categorías de POI's. Para ello se utiliza el arbol de categorías de OpenTripMaps: https://opentripmap.io/catalog. 
@@ -90,52 +93,62 @@ Nos quedamos con las categorías que tienen resultados:
 
 Luego se contea la aparición de cada categoría en cada listing, obteniendo una tabla en la que, para cada ID de listing, se nos muestra la aparición de cada categoría, una por cada columna.
 
-## Paso 4: Tratamiento de la columna Amenities:
+(METER TABLA DE EJEMPLO DE LA TABLA CREADA)
+
+## Código 3: Tratamiento de la columna Amenities:
 
 La columna Amenities requiere un tratamiento para poder hacer un análisis de su contenido, ya que los datos vienen recogidos en lista dentro de cada celda. Se realiza un proceso para recoger cada uno de sus elementos (TV, Internet, Kitchen, Washer, etc...) en cada columna. Nos genera una tercera tabla, que unimos a la tabla principal. 
 En este caso, a diferencia de lo anterior, más que un conteo, se trata de un sistema binario en el que 0 significa que lo tiene, y 1 significa que no lo tiene.
 
-## Paso 5: Label Encoder
+(METER TABLA DE EJEMPLO DE LA TABLA CREADA)
 
-Hacemos LabelEncoder a las columnas objeto, como por ejemplo la columna ciudad. Siendo tal que:
+### Label Encoder
+
+Hacemos LabelEncoder a la columna "City". Quedando de manera que:
 
             0. Madrid
             1. Barcelona
 
-## Paso 6: Predicción KMeans:
+## Código 4: Algoritmo de clusterización KMeans:
 
-El código efectúa una predicción KMeans para discriminar entre diversos tipos de alojamiento en función de diversos valores que determina el propio modelo.
+El código efectúa una clusterización KMeans para discriminar entre diversos tipos de alojamiento en función de diversos valores que determina el propio modelo.
 
 Para este modelo se trabaja con las columnas de POI's, Amenities y columnas cuantitativas del primer dataset, como Habitaciones, Huéspedes, Baños, Huéspedes, Tipo de Habitación, Ciudad y Precio.
 
-Esos datos servirán de input para que el modelo aprenda a diferenciar los registros en 6 clusters diferentes.
+Esos datos servirán de input para que el modelo aprenda a diferenciar los registros en 6 clusters diferentes para el caso en el que hacemos uso de todos los datos, y 4 clusters diferentes en el caso que usamos solo datos de POI's cercanos. Este último caso solo se usa si el usuario no esta seguro del destino ni las características del alojamiento, y por lo tanto solo se le recomendaría en función a sus gustos.
 
-Se trabaja además con una segunda tabla secundaria en la que solamente figuran columnas POI's. Esta tabla se utilizará para hacer una predicción en la que el usuario no esta seguro de lo que quiere, y solamente se le pregunta por sus gustos.
+Esta determinación del número de clusters se ha asignado a través del método del codo para selección de número óptimo de clusters.
 
-Una vez realizada la predicción KMeans, se añade a la tabla principal la columna "cluster" en el que figura el número de cluster asignado al registro.
+Se trabaja además con una segunda tabla secundaria en la que solamente figuran columnas POI's. Esta tabla se utilizará para hacer una clusterización en la que el usuario no esta seguro de lo que quiere, y solamente se le pregunta por sus gustos.
+
+Una vez realizada la clusterización KMeans, se añade a la tabla principal la columna "cluster" en el que figura el número de cluster asignado al registro.
 
 En paralelo, obtenemos una tabla de distancias al cluster. Con esta tabla, de los registros finales que obtengamos, nos quedaremos con el más cercano al cluster.
 
-## Paso 7: Análisis de clusters:
+(INDICAR LOS DOS ALGORITMOS DISTINTOS. DEPENDIENDO DE LA ELECCIÓN DEL USUARIO. UNO UTILIZANDO ESTOS DATOS, Y OTRO UTILIZANDO ESTOS DATOS.)
+
+### Análisis de clusters:
 
 A través del análisis de clusters, sacaremos la información relevante de cada uno de los clusters para intentar interpretar de qué manera ha realizado el algoritmo Kmeans la clasificación.
 
+Para el análisis de los clusters, hemos usado una selección representativa de los 100 clusters más cercanos a cada cluster.
+
 Este análisis lo usaremos como primer paso a la hora de preguntar al usuario. Haciendo dos o tres preguntas básicas, asignaremos un cluster al usuario en función de su perfil de alternativas.
 
-        • Grupo 0 :
-            ○ Por encima de la media en el número de camas (3 vs 2 ), así como de huéspedes ( 4,5 vs 3,3 ) y número de habitaciones ( 1,93 vs 1,4 )
-            ○ El tipo de habitación es 1 , Casa entera.
-            ○ La ciudad es Barcelona.
-            ○ El precio es superior a la media (106 vs 78 )
-            ○ No hay muchos sitios de interés cercanos, tan solo se encuentra cerca de la media en arquitectura histórica (10,85 vs 12.93)
-            ○ Totas cuentan con TV, internet, cocina, calefacción, ascensor, ducha, aire acondicionado...
-        
-        (Primeras conclusiones de este tipo de grupo: Piso situado en una zona no céntrica de barcelona, apartamento completo que cuenta con bastante espacio y todas las comodidades posibles en el piso.
-        
-        VIAJE EN FAMILIA A BARCELONA, CASA ENTERA 
+    • Grupo 0 :
+        ○ Por encima de la media en el número de camas (3 vs 2 ), así como de huéspedes ( 4,5 vs 3,3 ) y número de habitaciones ( 1,93 vs 1,4 )
+        ○ El tipo de habitación es 1 , Casa entera.
+        ○ La ciudad es Barcelona.
+        ○ El precio es superior a la media (106 vs 78 )
+        ○ No hay muchos sitios de interés cercanos, tan solo se encuentra cerca de la media en arquitectura histórica (10,85 vs 12.93)
+        ○ Totas cuentan con TV, internet, cocina, calefacción, ascensor, ducha, aire acondicionado...
+    
+    (Primeras conclusiones de este tipo de grupo: Piso situado en una zona no céntrica de barcelona, apartamento completo que cuenta con bastante espacio y todas las comodidades posibles en el piso.
+    
+    VIAJE EN FAMILIA A BARCELONA, CASA ENTERA 
 
 
-        	• Grupo 1:
+    • Grupo 1:
 		○ Por debajo de la media en el número de camas (1 vs 2), así como de huéspedes (2 vs 3,3) y número de habitaciones (1 vs 1,4)
 		○ El tipo de habitación es el 0, Habitación privada.
 		○ La ciudad es Barcelona.
@@ -190,7 +203,51 @@ Este análisis lo usaremos como primer paso a la hora de preguntar al usuario. H
 	
         (Primeras conclusiones: Habitación privada en barcelona, por encima de la media en precio pero no mucho)
 
-## Paso 8: Preguntas al usuario:
+En el caso de la tabla reducida para la recomendación solo en base a los gustos del usuario, los cuatro clusters quedan analizados de la siguiente manera:
+
+	GRUPO 0: 
+	
+		○ PLAYAS
+		○ NATURALEZA
+		○ AFUERAS
+	
+	
+	Se trata de un grupo de apartamentos que se diferencia del resto en que se encuentran aquellos donde existen playas y reservas naturales, y no gran cantidad de otros tipos de interés.
+	
+
+	GRUPO 1:  
+	
+		○ CENTRO DE CIUDAD, IGLESIAS MONUMENTOS MUSEOS Y TEATROS
+		○ Geological formations: afueras o pueblos
+	
+	Se trata de un grupo de apartamentos que dista del resto en la cantidad de geological formations, por lo que se trata de apartamentos alejados del foco turístico y urbanístico de la ciudad
+		
+		
+	GRUPO 2:
+	
+		○ GEOLOGICAL
+		○ IGLESIAS
+		○ RESTAURANTES
+		○ MONUMENTOS
+		○ MUSEOS
+		○ TEATRO
+	
+	Se trata de un grupo de apartamentos en donde podemos encontrar una gran cantidad de iglesias, restaurantes, monumentos, museos, teatros... es decir, probablemente se encuentren en el centro de la ciudad donde haya un gran número de sitios de interés cercanos.
+	
+	
+	
+	GRUPO 3: 
+	
+		○ WATER 
+		○ MUCHAS TIENDAS Y RESTAURANTES
+		○ BIEN DE MONUMENTOS IGLESIAS PERO NO TANTO COMO EL 2
+		○ Lugar más tranquilo
+		
+	Cercano a ríos, y hay un gran número de tiendas y restaurantes, lugar transitado pero mucho más tranquilo que el grupo 2.
+
+
+
+## Código 5: Metodología de recomendación:
 
 ### Obtención del cluster:
 
@@ -214,7 +271,7 @@ Una vez realizada esta clusterización, pasamos a la etapa de filtrado.
 
 Una vez seleccionado el cluster, pasamos a la selección por gustos. En este proceso, filtramos los valores en función de las respuestas que nos devuelve el usuario en relación al número de huéspedes, equipamiento, habitaciones...
 
-## Paso 9: Recomendación final:
+### Recomendación final:
 
 Al final de la función, el sistema nos devuelve un print con la recomendación que nos hace. En este print observamos nombre, descripción, url de Airbnb y diversos datos.
 Además, se ha incorporado un mapa de geolocalización a través de la librería folium que nos permite corroborar que la recomendación se ajusta a lo que buscamos.

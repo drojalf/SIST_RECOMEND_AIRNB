@@ -37,7 +37,7 @@ https://opentripmap.io/ Aprovechando la columna "Geolocation" de la información
 Para ello, hacemos uso de la API de esta web con el objetivo de hacer una exploración de los diferentes puntos de interes, distinguiéndolos por su diversa tipología (historia, deportes, museos, restaurantes, monumentos...) en un radio de 500 metros a la redonda de cada uno de los alojamientos. 
 Este radio se ha establecido por cuestión de equilibrio entre funcionalidad y economizar recursos, pero es ampliable.
 
-## Código 1: 
+## 1. Obtención de datos y visualización: 
 
 ### Obtención de información y limpieza de datos:
 
@@ -55,7 +55,7 @@ En este paso, visualizamos la información a través de distintos gráficos de v
     - Mapa de calor: Observamos mucha correlación entre las columnas de Accommodates, Bedrooms, Bathrooms...
 Se incluyen diversas visualizaciones en el PDF anexo.
 
-## Código 2: Obtención de los puntos de interés:
+## 2. POIs cercanos y API OpentripMaps:
 A través de la API de Opentripmaps, y valiéndonos de la columna Geolocation, hacemos una iteración de todos los alojamientos para que nos informe de aquellos POI's existentes a su alrededor. Estos pois quedan almacenados en un .json de cada listing, recogiendo su ID, tipo, nombre...
 
 Posteriormente se scrapean las distintas categorías de POI's. Para ello se utiliza el arbol de categorías de OpenTripMaps: https://opentripmap.io/catalog. 
@@ -95,7 +95,7 @@ Luego se contea la aparición de cada categoría en cada listing, obteniendo una
 
 (METER TABLA DE EJEMPLO DE LA TABLA CREADA)
 
-## Código 3: Tratamiento de la columna Amenities:
+## 3. Tratamiento columna Amenities:
 
 La columna Amenities requiere un tratamiento para poder hacer un análisis de su contenido, ya que los datos vienen recogidos en lista dentro de cada celda. Se realiza un proceso para recoger cada uno de sus elementos (TV, Internet, Kitchen, Washer, etc...) en cada columna. Nos genera una tercera tabla, que unimos a la tabla principal. 
 En este caso, a diferencia de lo anterior, más que un conteo, se trata de un sistema binario en el que 0 significa que lo tiene, y 1 significa que no lo tiene.
@@ -109,7 +109,7 @@ Hacemos LabelEncoder a la columna "City". Quedando de manera que:
             0. Madrid
             1. Barcelona
 
-## Código 4: Algoritmo de clusterización KMeans:
+## 4. Predicción y preparación de los datos finales:
 
 El código efectúa una clusterización KMeans para discriminar entre diversos tipos de alojamiento en función de diversos valores que determina el propio modelo.
 
@@ -247,8 +247,8 @@ En el caso de la tabla reducida para la recomendación solo en base a los gustos
 
 
 
-## Código 5: Metodología de recomendación:
-
+## 5. Creación de App:
+ 
 ### Obtención del cluster:
 
 A través de variables input, vamos preguntando al usuario diversas cuestiones para, en primer lugar, asignarle un cluster, y en segundo lugar, filtrar los datos que no necesitemos. El resultado final vendrá determinado por el registro más cercano al cluster de aquellos que resten.

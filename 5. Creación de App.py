@@ -1,26 +1,6 @@
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              #################################### CÓDIGO 5 ########################################
 import folium
-from h11 import Data
-import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
-from yellowbrick.cluster import KElbowVisualizer
 from operator import itemgetter
 from sklearn.preprocessing import MinMaxScaler
-import numpy as np
 import pymongo
 import pandas as pd
 import os
@@ -43,10 +23,6 @@ datos_kmeans = pd.DataFrame(list(col.find()))
 
 dataset.drop(columns=["_id", ""], inplace=True, errors="ignore")
 datos_kmeans.drop(columns=["_id", ""], inplace=True, errors="ignore")
-
-# #IMPORT DE TABLAS MANUAL
-# dataset = pd.read_csv(r"C:\Users\eduar\Desktop\Curso DATA\trabajo final\dataset_new_proyecto_geo.csv")
-# datos_kmeans = pd.read_csv(r"C:\Users\eduar\Desktop\Curso DATA\trabajo final\Tabla_Mongo.csv")
 
 
 # LO USAMOS PARA SACAR LAS PONDERACIONES PARA REALIZAR ASIGNACIONES CON CIERTO PESO

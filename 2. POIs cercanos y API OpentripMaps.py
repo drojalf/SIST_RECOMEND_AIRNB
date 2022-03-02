@@ -2,7 +2,6 @@ import pandas as pd
 from tqdm import tqdm
 import requests
 import json
-from bs4 import BeautifulSoup
 from sklearn.cluster import KMeans
 import os
 from pymongo import MongoClient
@@ -19,8 +18,7 @@ col = client["proyectoairbnb"]["dataset_limpio1"]
 dataset = pd.DataFrame(list(col.find()))
 dataset.drop(columns="_id", inplace=True)
 dataset.drop(columns="", inplace=True)
-# path = r"C:\Users\Lenovo\Documents\CURSO DATA SCIENCE - NEBULOVA\Archivos\PROYECTO AIRBNB\PROYECTO EDU\dataset_limpio.csv"
-# dataset = pd.read_csv(path)
+
 
 # DESCARGAR DATOS DE OPENTRIPMAPS DE TODAS LAS GEOLOCATIONS PARA PUNTOS DE INTERES (POI)
 # QUE ESTÉN A MENOS DE 500 METROS DE CADA UNO DE LOS LISTINGS:
@@ -94,7 +92,6 @@ listcat = ["beaches",
            "skyscrapers"]
 
 conteoclas = pd.DataFrame(columns=["id_listing"])
-# prueba_monuments = kinds_global["kinds_poi"].astype(str).str.count("monuments")
 for clas in listcat:
     print(f"{listcat.index(clas) + 1} / {len(listcat)} -- Buscando el elemento: {clas}")
     for row in tqdm(range(kinds_global_agrupada.shape[0])):

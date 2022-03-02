@@ -11,8 +11,7 @@ KEY_MONGO = os.environ.get('KEY_MONGO')
 client = MongoClient(
     f"mongodb+srv://admin:{KEY_MONGO}@clusterairbnb.hkqbr.mongodb.net/")
 
-# path_dataset = r"C:\Users\Lenovo\Documents\CURSO DATA SCIENCE - NEBULOVA\Archivos\PROYECTO AIRBNB\PROYECTO EDU\dataset_limpio.csv"
-# path_conteoclas = r"C:\Users\Lenovo\Documents\CURSO DATA SCIENCE - NEBULOVA\Archivos\PROYECTO AIRBNB\conteo_de_clases10_02_2022.csv"
+
 col_dataset = client["proyectoairbnb"]["dataset_limpio1"]
 col_conteoclas = client["proyectoairbnb"]["conteo_clases"]
 dataset = pd.DataFrame(list(col_dataset.find()))

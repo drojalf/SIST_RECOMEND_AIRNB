@@ -48,7 +48,7 @@ Luego se efectúa una limpieza de los valores nulos, así como para la columna d
 Como resultado de esto, es obtienen 30.425 filas.
 
 ### Análisis de la información y visualización:
-En este paso, visualizamos la información a través de distintos gráficos de visualización con las librerías Plotly y Matplotlib:
+En este paso, visualizamos la información a través de distintos gráficos de visualización con las librerías Seaborn y Matplotlib:
     - Distribución de puntuaciones: Observamos que las calificaciones predominantes, con diferencia, son aquellas que rondan el 9.
     - La distribución de precios en una muestra de los 1000 primeros: Observamos que la gran mayoría se ubica en menos de 100 Euros la noche, luego hay muchos que superan esta cantidad, y algunos aislados con valores muy altos.
     - Precios en funcion del tipo de propiedad: En este caso, observamos que aquellas propiedades "no usuales" son las más caras, como las villas, los barcos, o las cuevas.
